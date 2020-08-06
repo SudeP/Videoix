@@ -21,12 +21,12 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Videoix.Classes;
 using Videoix.ManageClasses;
 using PDK.Tool;
+using System.Diagnostics;
 
 namespace Videoix.ManageClasses
 {
@@ -39,6 +39,14 @@ namespace Videoix.ManageClasses
         public string Username { get; set; }
         public string Password { get; set; }
         public string played, currentVideoLink;
+        private readonly List<string> listButtonIds = new List<string>()
+        {
+            "filterCoins",
+            "filterSecond"
+        };
+        private readonly int maxCount = 10, maxCountOfRefrest = 5;
+        private int lastListButtonIdIndex = -1;
+        private int countOfRefrest = 0;
         public ManageRunner(WFCEF wFCEF, ChromiumWebBrowser chromiumWebBrowser, string username, string password)
         {
             Username = username;
@@ -47,6 +55,12 @@ namespace Videoix.ManageClasses
             banList = new List<string>();
             f = wFCEF;
             cwb = chromiumWebBrowser;
+        }
+        public void KillMe() => Process.GetCurrentProcess().Kill();
+        public string GetListButtonId()
+        {
+            lastListButtonIdIndex = ++lastListButtonIdIndex % listButtonIds.Count;
+            return listButtonIds[lastListButtonIdIndex];
         }
         public void WaitComplate()
         {
@@ -61,10 +75,14 @@ namespace Videoix.ManageClasses
                     {
                         isLoading = cwb.IsBrowserInitialized ? !cwb.GetBrowser().IsLoading : false;
                     })
+                    .Try(() =>
+                    {
+                        cwb.EvaluateScriptAsync("alert = function() { console.log('run alert');}");
+                    })
                     .Catch((ex) =>
                     {
                         isLoading = false;
-                    })
+                    }, 1)
                     .Run();
                 });
                 if (isLoading)
@@ -90,10 +108,8 @@ namespace Videoix.ManageClasses
                 switch (page)
                 {
                     case Pages.None:
-                        f.me.Wait(90 * f.me.m);
-                        break;
                     case Pages.Capchta:
-                        //not set
+                        KillMe();
                         break;
                     case Pages.Home:
                         Forward($@"{baseUri}login");
@@ -107,8 +123,6 @@ namespace Videoix.ManageClasses
                         break;
                     case Pages.Video:
                         Video();
-                        break;
-                    default:
                         break;
                 }
             }
@@ -132,6 +146,8 @@ namespace Videoix.ManageClasses
                 pages = Pages.Main;
             else if (html.Contains("Önerilen videolar") && html.Contains("ytPlayer") && html.Contains("Daha fazla video yükle") && html.Contains("kredi") && html.Contains("Takip Et") && html.Contains("İzleme Durumu"))
                 pages = Pages.Video;
+            else if (html.Contains("I am human") && html.Contains("Privacy") && html.Contains("Terms") && html.Contains("https://www.hcaptcha.com/privacy") && html.Contains("https://www.hcaptcha.com/terms"))
+                pages = Pages.Capchta;
             else
                 pages = Pages.None;
 
@@ -154,7 +170,6 @@ namespace Videoix.ManageClasses
         }
         public void Main()
         {
-            Information();
             f.ltb.Log("Finding Video");
             LoopIsLoadedVideoDiv(1);
         }
@@ -179,7 +194,7 @@ namespace Videoix.ManageClasses
                     else if (counter != 10)
                     {
                         f.ltb.Log("Counter : " + ++counter);
-                        f.me.Wait(250);
+                        f.me.Wait(2 * f.me.m);
                         LoopIsLoadedVideoDiv(counter);
                     }
                     else
@@ -192,11 +207,23 @@ namespace Videoix.ManageClasses
         }
         public void SelectVideo()
         {
+            ++countOfRefrest;
+            if (countOfRefrest == maxCountOfRefrest)
+                KillMe();
             currentVideoLink = string.Empty;
 
             int index = 0;
-
+            int counter = 0;
         reGet:
+            f.me.Wait(250);
+            ++counter;
+            if (maxCount == 30)
+            {
+                var jsList = $@"$('#{GetListButtonId()}').click()";
+                var taskRefreshVideos = cwb.EvaluateScriptAsync(jsList);
+                taskRefreshVideos.Wait();
+                return;
+            }
             var js = $"$($('#loadMoreVideo div a:contains(\"önce\")')[{index}]).attr('href')";
             var taskFirstVideoLink = cwb.EvaluateScriptAsync(js);
             taskFirstVideoLink.Wait();
@@ -211,6 +238,8 @@ namespace Videoix.ManageClasses
                 ++index;
                 goto reGet;
             }
+
+            countOfRefrest = 0;
 
             f.ltb.Log("Found video");
 
@@ -247,8 +276,8 @@ namespace Videoix.ManageClasses
                 else
                 {
                     f.ltb.Log("Not played. counter : " + ++counter);
-                    if (counter != 10)
-                        f.me.Wait(1000);
+                    if (counter != 20)
+                        f.me.Wait(2000);
                     else
                         break;
                 }
@@ -286,6 +315,7 @@ namespace Videoix.ManageClasses
             }
             f.ltb.Log("Video Finish");
         }
+        [Obsolete]
         public void Information()
         {
             var cm = cwb.GetCookieManager();
@@ -297,44 +327,5 @@ namespace Videoix.ManageClasses
                 sb.AppendLine(nameValue.Item1 + " = " + nameValue.Item2);
             MessageBox.Show(sb.ToString());
         }
-    }
-    class CookieMonster : ICookieVisitor
-    {
-        readonly List<Tuple<string, string>> cookies = new List<Tuple<string, string>>();
-        readonly ManualResetEvent gotAllCookies = new ManualResetEvent(false);
-
-        public bool Visit(Cookie cookie, int count, int total, ref bool deleteCookie)
-        {
-            cookies.Add(new Tuple<string, string>(cookie.Name, cookie.Value));
-
-            if (count == total - 1)
-                gotAllCookies.Set();
-
-            return true;
-        }
-
-        public void WaitForAllCookies()
-        {
-            gotAllCookies.WaitOne();
-        }
-
-        public void Dispose()
-        {
-
-        }
-
-        public IEnumerable<Tuple<string, string>> NamesValues
-        {
-            get { return cookies; }
-        }
-    }
-    public enum Pages
-    {
-        None,
-        Capchta,
-        Home,
-        Login,
-        Main,
-        Video
     }
 }

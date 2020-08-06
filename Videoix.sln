@@ -5,6 +5,14 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Videoix", "Videoix\Videoix.csproj", "{50F10B94-E258-4D2A-9DBD-47C794BD0799}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidoixClient", "VidoixClient\VidoixClient.csproj", "{A67B29B4-111E-4319-AE3F-5BFD16764AA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidoixServer", "VidoixServer\VidoixServer.csproj", "{411BC4A9-C3A3-4A37-AB49-F4147322E696}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidoixLibrary", "VidoixLibrary\VidoixLibrary.csproj", "{AED29131-2E10-49D0-8212-D77A783B233A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidoixFTPUploader", "VidoixFTPUploader\VidoixFTPUploader.csproj", "{EFF1F03B-F5DE-431A-B344-2B81720E15D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +29,38 @@ Global
 		{50F10B94-E258-4D2A-9DBD-47C794BD0799}.Release|Any CPU.Build.0 = Release|Any CPU
 		{50F10B94-E258-4D2A-9DBD-47C794BD0799}.Release|x86.ActiveCfg = Release|x86
 		{50F10B94-E258-4D2A-9DBD-47C794BD0799}.Release|x86.Build.0 = Release|x86
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Debug|x86.Build.0 = Debug|Any CPU
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Release|x86.ActiveCfg = Release|Any CPU
+		{A67B29B4-111E-4319-AE3F-5BFD16764AA3}.Release|x86.Build.0 = Release|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Debug|x86.Build.0 = Debug|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Release|x86.ActiveCfg = Release|Any CPU
+		{411BC4A9-C3A3-4A37-AB49-F4147322E696}.Release|x86.Build.0 = Release|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Debug|x86.Build.0 = Debug|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Release|x86.ActiveCfg = Release|Any CPU
+		{AED29131-2E10-49D0-8212-D77A783B233A}.Release|x86.Build.0 = Release|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Debug|x86.Build.0 = Debug|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Release|x86.ActiveCfg = Release|Any CPU
+		{EFF1F03B-F5DE-431A-B344-2B81720E15D6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

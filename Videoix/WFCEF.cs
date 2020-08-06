@@ -49,6 +49,7 @@ namespace Videoix
         {
             GetAppValues();
             SetEvents();
+            //ProxyClientBrowser("tr");
             SetCWB();
             SetManages();
         }
