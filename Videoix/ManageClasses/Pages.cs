@@ -4,6 +4,7 @@
     {
         None,
         Capchta,
+        CloudFlare,
         Home,
         Login,
         Main,

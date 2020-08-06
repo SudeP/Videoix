@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace VidoixFTPUploader
 {
-    public partial class Form1 : Form
+    public class FTPUploader
     {
-        public Form1()
+        public void Upload()
         {
-            InitializeComponent();
-        }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            FtpDosyaUpload("176.53.34.178", "admin", "1sw13f3f5g5n6nk", @"C:\Users\Acand\Desktop\New folder\testDoc.txt");
         }
-        public void FtpDosyaUpload(string ip, string username, string pass, string aktarilacak_dosya_yolu)
+        public void FtpFileUpload(string ip, string username, string pass, string aktarilacak_dosya_yolu)
         {
             FileInfo FI = new FileInfo(aktarilacak_dosya_yolu);
 

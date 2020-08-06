@@ -111,6 +111,9 @@ namespace Videoix.ManageClasses
                     case Pages.Capchta:
                         KillMe();
                         break;
+                    case Pages.CloudFlare:
+                        f.me.Wait(6 * f.me.m);
+                        break;
                     case Pages.Home:
                         Forward($@"{baseUri}login");
                         Login();
@@ -148,6 +151,8 @@ namespace Videoix.ManageClasses
                 pages = Pages.Video;
             else if (html.Contains("I am human") && html.Contains("Privacy") && html.Contains("Terms") && html.Contains("https://www.hcaptcha.com/privacy") && html.Contains("https://www.hcaptcha.com/terms"))
                 pages = Pages.Capchta;
+            else if (html.Contains("DDoS protection") && html.Contains("Please allow up to 5 seconds...") && html.Contains("This process is automatic.") && html.Contains("Checking your browser before accessing vidoix.com."))
+                pages = Pages.CloudFlare;
             else
                 pages = Pages.None;
 
@@ -216,10 +221,12 @@ namespace Videoix.ManageClasses
             int counter = 0;
         reGet:
             f.me.Wait(250);
-            ++counter;
+            f.ltb.Log($@"reGet: {++counter}");
             if (maxCount == 30)
             {
-                var jsList = $@"$('#{GetListButtonId()}').click()";
+                var id = GetListButtonId();
+                f.ltb.Log($@"click {id}");
+                var jsList = $@"$('#{id}').click()";
                 var taskRefreshVideos = cwb.EvaluateScriptAsync(jsList);
                 taskRefreshVideos.Wait();
                 return;
