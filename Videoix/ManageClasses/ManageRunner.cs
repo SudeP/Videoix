@@ -77,7 +77,7 @@ namespace Videoix.ManageClasses
                     })
                     .Try(() =>
                     {
-                        cwb.EvaluateScriptAsync("alert = function() { console.log('run alert');}");
+                        cwb.EvaluateScriptAsync("alert = function() { return; }");
                     })
                     .Catch((ex) =>
                     {
@@ -134,8 +134,6 @@ namespace Videoix.ManageClasses
         {
             WaitComplate();
 
-            f.ltb.Log("Were Am I ?");
-
             var task = cwb.GetSourceAsync();
             task.Wait();
             var html = task.Result;
@@ -156,8 +154,6 @@ namespace Videoix.ManageClasses
             else
                 pages = Pages.None;
 
-            f.ltb.Log("I am from " + pages.ToString());
-
             return pages;
         }
         public void Login()
@@ -170,12 +166,9 @@ namespace Videoix.ManageClasses
 
             var taskSubmit = cwb.EvaluateScriptAsync($@"$('button[type=""submit""]').click();");
             taskSubmit.Wait();
-
-            f.ltb.Log("Request Login");
         }
         public void Main()
         {
-            f.ltb.Log("Finding Video");
             LoopIsLoadedVideoDiv(1);
         }
         public void LoopIsLoadedVideoDiv(int counter)
@@ -198,7 +191,6 @@ namespace Videoix.ManageClasses
                         SelectVideo();
                     else if (counter != 10)
                     {
-                        f.ltb.Log("Counter : " + ++counter);
                         f.me.Wait(2 * f.me.m);
                         LoopIsLoadedVideoDiv(counter);
                     }
@@ -221,11 +213,9 @@ namespace Videoix.ManageClasses
             int counter = 0;
         reGet:
             f.me.Wait(250);
-            f.ltb.Log($@"reGet: {++counter}");
-            if (maxCount == 30)
+            if (index == maxCount)
             {
                 var id = GetListButtonId();
-                f.ltb.Log($@"click {id}");
                 var jsList = $@"$('#{id}').click()";
                 var taskRefreshVideos = cwb.EvaluateScriptAsync(jsList);
                 taskRefreshVideos.Wait();
@@ -237,9 +227,6 @@ namespace Videoix.ManageClasses
 
             currentVideoLink = $@"{baseUri}{taskFirstVideoLink.Result.Result.ToString()}";
 
-            f.ltb.Log("Link : " + currentVideoLink);
-
-
             if (banList.Contains(currentVideoLink))
             {
                 ++index;
@@ -247,8 +234,6 @@ namespace Videoix.ManageClasses
             }
 
             countOfRefrest = 0;
-
-            f.ltb.Log("Found video");
 
             Forward(currentVideoLink);
         }
@@ -262,7 +247,6 @@ namespace Videoix.ManageClasses
         {
             var taskHasFocus = cwb.EvaluateScriptAsync($@"document.hasFocus = function () {"{"}return true;{"}"}");
             taskHasFocus.Wait();
-            f.ltb.Log("Set hasFocus");
         }
         public void VideoIsLoaded()
         {
@@ -276,31 +260,26 @@ namespace Videoix.ManageClasses
 
                 if (taskIsLoaded.Result.Result != null && taskIsLoaded.Result.Result.ToString() == "1")
                 {
-                    f.ltb.Log("Video Loaded");
                     IsFinish();
                     return;
                 }
                 else
                 {
-                    f.ltb.Log("Not played. counter : " + ++counter);
                     if (counter != 20)
                         f.me.Wait(2000);
                     else
                         break;
                 }
             }
-            f.ltb.Log("Video unloaded");
             banList.Add(currentVideoLink);
         }
         public void PlayVideo()
         {
             var taskPlayVideo = cwb.EvaluateScriptAsync("playing = true; player.playVideo(); player.mute()");
             taskPlayVideo.Wait();
-            f.ltb.Log("Play video");
         }
         public void IsFinish()
         {
-            f.ltb.Log("Is finish Video ?");
             var taskIsBlock = cwb.EvaluateScriptAsync($@"$('#other_video').css('display') === 'block'");
             taskIsBlock.Wait();
             if ((bool)taskIsBlock.Result.Result == false)
@@ -313,14 +292,12 @@ namespace Videoix.ManageClasses
                     taskIsPlayed.Wait();
                     if (taskIsPlayed.Result.Result.ToString() != played)
                     {
-                        f.ltb.Log("not finish");
                         played = taskIsPlayed.Result.Result.ToString();
                         f.me.Wait(5000);
                         IsFinish();
                     }
                 }
             }
-            f.ltb.Log("Video Finish");
         }
         [Obsolete]
         public void Information()

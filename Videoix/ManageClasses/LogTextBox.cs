@@ -57,16 +57,19 @@ namespace Videoix.ManageClasses
         {
             if (TextBox.Text.Length == 0)
                 return;
+#pragma warning disable
+            if (1 == 2)
+            {
+                var dt = DateTime.Now;
 
-            var dt = DateTime.Now;
 
+                var dir = $@"{Application.StartupPath}\LogTextBox\{dt.Year}\{dt.Month}\{dt.Day}";
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
 
-            var dir = $@"{Application.StartupPath}\LogTextBox\{dt.Year}\{dt.Month}\{dt.Day}";
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            File.WriteAllText($@"{dir}\{dt.ToString("HH.mm.ss.txt")}", TextBox.Text);
-
+                File.WriteAllText($@"{dir}\{dt.ToString("HH.mm.ss.txt")}", TextBox.Text);
+            }
+#pragma warning restore
             TextBox.Text = string.Empty;
         }
         public static LogTextBox Create(TextBox textBox) => new LogTextBox().SetTextBox(textBox);

@@ -11,7 +11,6 @@ namespace Videoix.ManageClasses
         public ManageEnvrionment(WFCEF wFCEF) => f = wFCEF;
         public void Wait(int sure)
         {
-            f.ltb.Log("Start Wait. ms: " + sure);
             DateTime dateTime = DateTime.Now.AddMilliseconds((double)sure);
             int num = 0;
             while (DateTime.Now < dateTime)
@@ -20,7 +19,6 @@ namespace Videoix.ManageClasses
                     Application.DoEvents();
                 ++num;
             }
-            f.ltb.Log("Finish Wait. ms: " + sure);
         }
         public void InvokeRequired(Action action)
         {

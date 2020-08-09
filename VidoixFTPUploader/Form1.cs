@@ -21,7 +21,10 @@ namespace VidoixFTPUploader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            FtpDosyaUpload("176.53.34.178", "admin", "1sw13f3f5g5n6nk", @"C:\Users\Acand\Desktop\New folder\testDoc.txt");
+            FTPUploader ftpu = new FTPUploader();
+            //ftpu.Upload(@"C:\Users\Acand\source\repos\Videoix\Videoix\bin\x86\Debug", "176.53.34.178", "admin", "1sw13f3f5g5n6nk");
+            ftpu.Upload(@"C:\Users\Acand\Desktop\New folder\", "176.53.34.178", "admin", "1sw13f3f5g5n6nk");
+            //FtpDosyaUpload("176.53.34.178", "admin", "1sw13f3f5g5n6nk", @"C:\Users\Acand\Desktop\New folder\testDoc.txt");
         }
         public void FtpDosyaUpload(string ip, string username, string pass, string aktarilacak_dosya_yolu)
         {
