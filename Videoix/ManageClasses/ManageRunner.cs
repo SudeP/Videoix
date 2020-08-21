@@ -44,7 +44,7 @@ namespace Videoix.ManageClasses
             "filterCoins",
             "filterSecond"
         };
-        private readonly int maxCount = 10, maxCountOfRefrest = 5;
+        private readonly int maxCount = 8, maxCountOfRefrest = 5;
         private int lastListButtonIdIndex = -1;
         private int countOfRefrest = 0;
         public ManageRunner(WFCEF wFCEF, ChromiumWebBrowser chromiumWebBrowser, string username, string password)
@@ -210,7 +210,6 @@ namespace Videoix.ManageClasses
             currentVideoLink = string.Empty;
 
             int index = 0;
-            int counter = 0;
         reGet:
             f.me.Wait(250);
             if (index == maxCount)
@@ -253,12 +252,14 @@ namespace Videoix.ManageClasses
             int counter = 0;
             while (true)
             {
+                ++counter;
+
                 PlayVideo();
 
                 var taskIsLoaded = cwb.EvaluateScriptAsync($@"player.getPlayerState()");
                 taskIsLoaded.Wait();
 
-                if (taskIsLoaded.Result.Result != null && taskIsLoaded.Result.Result.ToString() == "1")
+                if (taskIsLoaded.Result != null && taskIsLoaded.Result.Result != null && taskIsLoaded.Result.Result.ToString() == "1")
                 {
                     IsFinish();
                     return;

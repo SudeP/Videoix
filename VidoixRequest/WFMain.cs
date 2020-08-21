@@ -3,6 +3,8 @@ using RestSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -22,23 +24,26 @@ namespace Videoix
         RestClient client;
         RestRequest request;
         RestResponse response;
-        private System.Timers.Timer TimerForInformation, TimerForStatu;
+        private System.Timers.Timer TimerForInformation, TimerForStatu, TimerForStopWatch;
         private bool isRun = false;
         Thread thread;
-        int saniye = 0, remaing, loopCount;
+        int saniye = 0, remaing, loopCount, tryedMaxCount = 5, tryedCount = 0;
         string videoId, youtberId, x;
+        Stopwatch stopwatch;
+        CheckCoinsModal cc;
+        string username, password;
+        string logText = "";
         private void IsRun()
         {
             if (isRun)
             {
+                stopwatch.Start();
                 btnStart.Enabled = !isRun;
-                btnStop.Enabled = isRun;
                 thread.Start();
             }
             else
             {
                 btnStart.Enabled = isRun;
-                btnStop.Enabled = !isRun;
                 thread.Abort();
             }
         }
@@ -68,6 +73,24 @@ namespace Videoix
                 Application.DoEvents();
             });
         }
+        public void LogTT(string @string)
+        {
+            logText += @string + Environment.NewLine;
+        }
+        public void Write()
+        {
+            LogTT(Text);
+            LogTT(tbxanalys.Text);
+            LogTT($@"Bitiş Coin," + tbxCurrentCoin.Text);
+            string p = Application.StartupPath + "\\Log";
+            if (!Directory.Exists(p))
+                Directory.CreateDirectory(p);
+            string f = $@"{p}\{DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss")}.csv";
+            StreamWriter streamWriter = new StreamWriter(f, true, System.Text.Encoding.GetEncoding(1254));
+            streamWriter.Write(logText);
+            streamWriter.Flush();
+            streamWriter.Close();
+        }
         public void Wait(int sure)
         {
             DateTime dateTime = DateTime.Now.AddMilliseconds((double)sure);
@@ -81,13 +104,52 @@ namespace Videoix
         }
         public void Acction(Action action)
         {
-            if (InvokeRequired)
-                Invoke(action);
-            else
-                action.Invoke();
+            try
+            {
+                if (InvokeRequired)
+                    Invoke(action);
+                else
+                    action.Invoke();
+            }
+            catch (Exception)
+            {
+            }
+        }
+        private void WFMain_Shown(object sender, EventArgs e)
+        {
+            stopwatch = new Stopwatch();
+        }
+        private void WFMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                stopwatch.Stop();
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+                thread.Abort();
+            }
+            catch (Exception)
+            {
+
+            }
+            try
+            {
+                Write();
+            }
+            catch (Exception)
+            {
+            }
         }
         private void WFMain_Load(object sender, EventArgs e)
         {
+            username = System.Configuration.ConfigurationManager.AppSettings["username"];
+            password = System.Configuration.ConfigurationManager.AppSettings["password"];
+            lblusername.Text += username;
+            lblpassword.Text += password;
             GoLogin();
             Login();
             if (response.StatusCode == HttpStatusCode.OK)
@@ -100,19 +162,45 @@ namespace Videoix
                 UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
                 Timeout = -1
             };
+
+
             TimerForInformation = new System.Timers.Timer()
             {
                 Enabled = false,
                 Interval = 5000
             };
             TimerForInformation.Elapsed += TimerForInformation_Elapsed;
+
+
             TimerForStatu = new System.Timers.Timer()
             {
                 Enabled = false,
                 Interval = 3000
             };
             TimerForStatu.Elapsed += TimerForStatu_Elapsed;
+
+
+            TimerForStopWatch = new System.Timers.Timer()
+            {
+                Enabled = true,
+                Interval = 250
+            };
+            TimerForStopWatch.Elapsed += TimerForStatu_Elapsed1;
+
             thread = new Thread(MainWork);
+        }
+        private void TimerForStatu_Elapsed1(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Acction(() =>
+            {
+                try
+                {
+                    Text = $@"{stopwatch.Elapsed.Hours} saat {stopwatch.Elapsed.Minutes} dakika {stopwatch.Elapsed.Seconds % 60} saniye {stopwatch.Elapsed.Milliseconds} milisaniye geçti";
+                }
+                catch (Exception)
+                {
+                }
+            });
         }
         private void TimerForInformation_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -121,9 +209,14 @@ namespace Videoix
             {
                 Acction(() =>
                 {
-                    tbxanalys.Text = $@"
-coin : {information.Statu.Coins}
-";
+                    if (tbxStartCoin.Text == string.Empty)
+                    {
+                        LogTT("Başlangıç Coin," + information.Statu.Coins);
+                        LogTT($@"saniye,videoId,youtberId,x,remaing,loopCount,earnmoney,passloop");
+                        tbxStartCoin.Text = information.Statu.Coins;
+                    }
+                    tbxCurrentCoin.Text = information.Statu.Coins;
+                    tbxanalys.Text = $@"Kazanılan Coin : {int.Parse(tbxCurrentCoin.Text) - int.Parse(tbxStartCoin.Text)}";
                 });
             }
         }
@@ -149,8 +242,8 @@ coin : {information.Statu.Coins}
             request.AddHeader("referer", "https://www.vidoix.com/login");
             request.AddHeader("accept-language", "en-GB,en-US;q=0.9,en;q=0.8");
             request.AddParameter("token", cq["input[name=\"token\"]"].Get().First().Value);
-            request.AddParameter("user", "asiabeyy");
-            request.AddParameter("password", "123456tr");
+            request.AddParameter("user", username);
+            request.AddParameter("password", password);
             request.AddParameter("connect", "");
             Exec();
         }
@@ -184,7 +277,7 @@ coin : {information.Statu.Coins}
             SetCookieForRequest();
             var tresponse = client.Execute(trequest) as RestResponse;
             ControlCookieForClient();
-            return tresponse.StatusCode == HttpStatusCode.OK ? Information.FromJson(tresponse.Content) : new Information();
+            return tresponse.StatusCode == HttpStatusCode.OK ? Information.InformationExt.FromJson(tresponse.Content) : new Information();
         }
         private void GoVideoSite(string uri)
         {
@@ -238,6 +331,7 @@ coin : {information.Statu.Coins}
             request.AddHeader("accept-language", "en-GB,en-US;q=0.9,en;q=0.8");
             request.AddParameter("application/x-www-form-urlencoded; charset=UTF-8", $@"id={youtuberId}&vidID={videoId}&x={x}&watch_time={watch_time}", ParameterType.RequestBody);
             Exec();
+            cc = CheckCoinsModal.CheckCoinsModalExt.FromJson(response.Content);
         }
         private void VideoControl(string videoId)
         {
@@ -258,7 +352,11 @@ coin : {information.Statu.Coins}
         private void Exec()
         {
             SetCookieForRequest();
-            response = client.Execute(request) as RestResponse;
+            var rst = client.Execute(request);
+            if (!(rst is null))
+            {
+                response = rst as RestResponse;
+            }
             ControlCookieForClient();
         }
         private void SetCookieForRequest()
@@ -343,6 +441,7 @@ coin : {information.Statu.Coins}
         {
             while (true)
             {
+                int winmoneyCount = 0, passLoopCount = 0;
                 try
                 {
                     Lw("Get videos");
@@ -353,8 +452,14 @@ coin : {information.Statu.Coins}
                     Lw("Go video");
                     GoVideoSite(link);
                     Lw("Go video OK");
+                    ++tryedCount;
+                    if (tryedCount == tryedMaxCount)
+                    {
+                        System.Diagnostics.Process.GetCurrentProcess().Kill();
+                    }
                     if (!response.Content.Contains("Krediye göre sırala"))
                     {
+                        tryedCount = 0;
                         saniye = int.Parse(Regex.Match(response.Content, @"var length = [0-9]{1,5};").Value.Replace(";", "").Replace("var length = ", ""));
                         videoId = Regex.Match(response.Content, @"var response = '[0-9]{1,10}';").Value.Replace("';", "").Replace("var response = '", "");
                         youtberId = Regex.Match(response.Content, @"profile/channel/[0-9]{1,10}").Value.Replace("profile/channel/", "");
@@ -371,7 +476,27 @@ remaing:{remaing}
 loopCount:{loopCount}
 
 ");
+                        Acction(() =>
+                        {
+                            tbxcurrentVideo.Text = $@"
+
+saniye:{saniye}
+videoId:{videoId}
+youtberId:{youtberId}
+x:{x}
+remaing:{remaing}
+loopCount:{loopCount}
+
+";
+                        });
                         TimerForStatu.Enabled = true;
+                        int getcoinwin()
+                        {
+                            return int.Parse(x) * 15;
+                        }
+                        winmoneyCount = getcoinwin();
+                        ++passLoopCount;
+                        VideoControl(videoId);
                         VideoControl(videoId);
                         Process(videoId, true);
                         Lw("First post OK");
@@ -383,6 +508,13 @@ loopCount:{loopCount}
                             Lw($@"{(i + 1)}. post");
                             Process(videoId);
                             CheckCoins(youtberId, videoId, x, saniye.ToString());
+                            winmoneyCount += getcoinwin();
+                            ++passLoopCount;
+                            if (cc.IsVideo == 1 || cc.Statu > 0)
+                            {
+                                Lw("Video finish");
+                                break;
+                            }
                             Lw($@"{(i + 1)}. post OK");
                         }
                         TimerForStatu.Enabled = false;
@@ -390,9 +522,17 @@ loopCount:{loopCount}
                 }
                 catch (Exception)
                 {
-
                     TimerForStatu.Enabled = false;
+                    Lw("An Error");
                 }
+                try
+                {
+                    LogTT($@"{saniye},{videoId},{youtberId},{x},{remaing},{loopCount},{winmoneyCount},{passLoopCount}");
+                }
+                catch (Exception)
+                {
+                }
+
                 TimerForStatu.Enabled = false;
                 if (!isRun)
                     break;
