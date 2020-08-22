@@ -1,0 +1,33 @@
+﻿Bu kodda bulunanlar : 
+
+- Nerede olduğunu algılama :
+    - Anasayfa
+    - Giriş sayfası
+    - Video listenme sayfası
+    - Video izleme sayfası
+
+- Console log yazma
+
+- Login olma
+
+- video seçme
+    - eğer video yok ise sırasıyla : 
+        - Coin
+        - Time
+        olmak üzere filtre yapıp 10 saniye bekler.
+
+- Video izleme
+
+- Videoyu susturma
+
+- Videoyu çözürnürlüğünü en kısıkğa çekme
+
+- Videoyu otomatik başlatma
+
+- Videoyu eğer yüklenmezse Geç tuşuna basma
+
+- videonun zamanı siteden belirtilen zamandan azsa bir sonraki videoya geçme
+
+- Eğer videonun süresi belirtilen süreden fazla ise sonraki videoya geçme
+
+- Eğer Swal.fire çıkarsa direk olarak sonraki videoya geçme

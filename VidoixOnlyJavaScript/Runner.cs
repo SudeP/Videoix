@@ -1,10 +1,6 @@
 ﻿using CefSharp;
 using CefSharp.WinForms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -24,7 +20,7 @@ namespace VidoixOnlyJavaScript
             isdebug = System.Configuration.ConfigurationManager.AppSettings["isdebug"];
             Text = System.Configuration.ConfigurationManager.AppSettings["title"];
 
-            if(isdebug == "1")
+            if (isdebug == "1")
                 Size = new System.Drawing.Size(1000, 600);
             else
                 Size = new System.Drawing.Size(400, 400);
@@ -40,8 +36,44 @@ namespace VidoixOnlyJavaScript
             };
             cwb.FrameLoadEnd += Cwb_FrameLoadEnd;
             cwb.IsBrowserInitializedChanged += Cwb_IsBrowserInitializedChanged;
+            cwb.ConsoleMessage += Cwb_ConsoleMessage;
         }
+        private void Cwb_ConsoleMessage(object sender, ConsoleMessageEventArgs e)
+        {
+            if (e.Level != LogSeverity.Info)
+                return;
 
+            if (e.Message.StartsWith("//--setQualityToBestLowerQuality"))
+            {
+                var names = cwb.GetBrowser().GetFrameNames();
+                int index = 0;
+                while (true)
+                {
+                    var frame = cwb.GetBrowser().GetFrame(names[index]);
+                    if (frame.Url.StartsWith("https://www.youtube.com/"))
+                    {
+                        frame.EvaluateScriptAsync($@"
+var script = document.createElement('script');
+script.text = `
+{File.ReadAllText("quality.js")
+    .Replace("`", @"\`")
+    .Replace("${", @"\${")
+    .Replace((isdebug == "0" ? "cw(doc" : "1"), (isdebug == "0" ? "//cw(doc" : "1"))}
+`;
+document.querySelector('body').appendChild(script);").ContinueWith((rst) =>
+                                    {
+                                        if (rst.Result.Success == false)
+                                            Cwb_ConsoleMessage(sender, e);
+                                    });
+                        GC.Collect();
+                        break;
+                    }
+                    ++index;
+                    if (index >= names.Count)
+                        break;
+                }
+            }
+        }
         private void Cwb_IsBrowserInitializedChanged(object sender, EventArgs e)
         {
             if (isdebug == "1")
@@ -52,18 +84,14 @@ namespace VidoixOnlyJavaScript
                 }
             }
         }
-
         private void Cwb_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
             if (e.Url.StartsWith(baseUri))
-            {
-                Insert();
-            }
+                InsertManage();
         }
-        private void Insert()
+        private void InsertManage()
         {
             cwb.ExecuteScriptAsync("var jqueryscript = document.createElement('script'); jqueryscript.src = \"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js\";jqueryscript.type=\"text/javascript\";document.body.appendChild(jqueryscript);");
-
             cwb.EvaluateScriptAsync($@"
 var script = document.createElement('script');
 script.text = `
@@ -77,14 +105,9 @@ script.text = `
 jQuery('body').append(script)").ContinueWith((rst) =>
     {
         if (rst.Result.Success == false)
-        {
-            Insert();
-        }
-        else
-        {
-
-        }
+            InsertManage();
     });
+            GC.Collect();
         }
     }
 }
