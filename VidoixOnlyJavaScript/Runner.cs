@@ -43,7 +43,7 @@ namespace VidoixOnlyJavaScript
             if (e.Level != LogSeverity.Info)
                 return;
 
-            if (e.Message.StartsWith("//--setQualityToBestLowerQuality"))
+            if (e.Message == "setQualityToBestLowerQuality")
             {
                 var names = cwb.GetBrowser().GetFrameNames();
                 int index = 0;

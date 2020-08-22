@@ -151,7 +151,7 @@ function videoJS() {
 }
 function OnErrorQwerty(event) {
     cw("OnErrorQwerty connect");
-    //--$('a:contains("Geç")')[0].click();
+    $('a:contains("Geç")')[0].click();
     cw("OnErrorQwerty drop");
 }
 function onReadyQwerty(event) {
@@ -167,10 +167,10 @@ function onStateChangeQwerty(event) {
     if (event.data == YT.PlayerState.PLAYING && !isSetQuality) {
         cw("onStateChangeQwerty if");
         isSetQuality = !isSetQuality;
-        console.log('//--setQualityToBestLowerQuality');
+        console.log('setQualityToBestLowerQuality');
     } else if (event.data == YT.PlayerState.ENDED) {
         cw("onStateChangeQwerty else if");
-        //--window.location.href = linkHome;
+        window.location.href = linkHome;
     } else {
         cw("onStateChangeQwerty else");
     }
@@ -181,7 +181,7 @@ function isFinish() {
     var isVideoFinishInterval = setInterval(function () {
         if (roundedPlayed >= length) {
             clearInterval(isVideoFinishInterval);
-            //--window.location.href = linkHome;
+            window.location.href = linkHome;
         } else {
         }
     }, 500);
