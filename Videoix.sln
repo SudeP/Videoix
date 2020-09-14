@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidoixRequest", "VidoixRequ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidoixOnlyJavaScript", "VidoixOnlyJavaScript\VidoixOnlyJavaScript.csproj", "{CE783AA1-4738-43C2-AA30-FE8066BD0E3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightVersion", "LightVersion\LightVersion.csproj", "{689EEE25-4F3F-4813-8F18-828284D40B78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,14 @@ Global
 		{CE783AA1-4738-43C2-AA30-FE8066BD0E3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE783AA1-4738-43C2-AA30-FE8066BD0E3C}.Release|x86.ActiveCfg = Release|x86
 		{CE783AA1-4738-43C2-AA30-FE8066BD0E3C}.Release|x86.Build.0 = Release|x86
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Debug|x86.Build.0 = Debug|Any CPU
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Release|x86.ActiveCfg = Release|Any CPU
+		{689EEE25-4F3F-4813-8F18-828284D40B78}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
