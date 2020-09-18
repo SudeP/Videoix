@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LightVersion
@@ -15,6 +8,11 @@ namespace LightVersion
         public Root()
         {
             InitializeComponent();
+            IEVersions._11001.Set();
+            JavaScriptLoader.JavaScriptsFilePath = "Content\\JavaScripts\\";
+        }
+        private void Root_Load(object sender, EventArgs e)
+        {
         }
     }
 }

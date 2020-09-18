@@ -28,12 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.wb = new System.Windows.Forms.WebBrowser();
+            this.SuspendLayout();
+            // 
+            // wb
+            // 
+            this.wb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wb.Location = new System.Drawing.Point(0, 0);
+            this.wb.MinimumSize = new System.Drawing.Size(20, 20);
+            this.wb.Name = "wb";
+            this.wb.ScriptErrorsSuppressed = true;
+            this.wb.Size = new System.Drawing.Size(924, 650);
+            this.wb.TabIndex = 0;
+            // 
+            // Root
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(924, 650);
+            this.Controls.Add(this.wb);
+            this.Name = "Root";
             this.Text = "Root";
+            this.Load += new System.EventHandler(this.Root_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.WebBrowser wb;
     }
 }
