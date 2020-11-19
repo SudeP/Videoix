@@ -12,6 +12,9 @@ public static class CrossFrameIE
 
     public static HtmlDocument GetDocument(this HtmlWindow window)
     {
+        if (window is null)
+            return null;
+
         var rawDocument = (window.DomWindow as IHTMLWindow2).GetDocumentFromWindow();
 
         var shimManager = ShimManager.GetValue(window);

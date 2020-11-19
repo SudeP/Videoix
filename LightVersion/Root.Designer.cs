@@ -28,34 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.wb = new System.Windows.Forms.WebBrowser();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // wb
+            // button1
             // 
-            this.wb.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.wb.Location = new System.Drawing.Point(0, 0);
-            this.wb.MinimumSize = new System.Drawing.Size(20, 20);
-            this.wb.Name = "wb";
-            this.wb.ScriptErrorsSuppressed = true;
-            this.wb.Size = new System.Drawing.Size(924, 650);
-            this.wb.TabIndex = 0;
+            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Root
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(924, 650);
-            this.Controls.Add(this.wb);
+            this.Controls.Add(this.button1);
             this.Name = "Root";
             this.Text = "Root";
-            this.Load += new System.EventHandler(this.Root_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.WebBrowser wb;
+        private System.Windows.Forms.Button button1;
     }
 }

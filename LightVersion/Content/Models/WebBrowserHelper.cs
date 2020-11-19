@@ -81,3 +81,13 @@ public class WebBrowserHelper
         return maxVer;
     } // End Function GetBrowserVersion 
 }
+public static class WebBrowserHelperExtension
+{
+    public static void Set(this IEVersions iEVersions)
+    {
+        var procName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+        WebBrowserHelper.FixBrowserVersion();
+        WebBrowserHelper.FixBrowserVersion(procName);
+        WebBrowserHelper.FixBrowserVersion(procName, (int)iEVersions);
+    }
+}
